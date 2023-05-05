@@ -1,0 +1,8 @@
+[INIT]
+Cant =1
+
+[S1]
+Desc=Localhost
+IP=localhost
+P2= 7667
+PJ= 7666

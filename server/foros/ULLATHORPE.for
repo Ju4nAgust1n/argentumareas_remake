@@ -1,0 +1,2 @@
+[INFO]
+CantMSG=6

@@ -1,0 +1,10 @@
+[MAPA284]
+Name=Escondrijo Ruinas de Ëarost
+MagiaSinefecto=1
+NoEncriptarMP=0
+Terreno=BOSQUE
+Zona=DUNGEON
+Restringir=No
+BackUp= 1
+Pk=0
+MusicNum=97

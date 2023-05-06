@@ -1,6 +1,6 @@
-Rediseño del sistema de áreas de Argentum Online
+<b>Rediseño del sistema de áreas de Argentum Online</b>
 
-Desde hace ya algunos años dicho MMORPG cuenta con un sistema que divide el mapa en áreas para hacer más eficiente el envío de información a los clientes. El asunto es que dicha implementación, que viene por defecto con el juego, puede hacerse aún más eficiente.
+Desde hace ya algunos años dicho MMORPG cuenta con un sistema que divide el mapa en áreas para hacer más eficiente el envío de información a los clientes y de esta manera el server evita remitir datos a todos los integrantes del mapa. El asunto es que dicha implementación, que viene por defecto con el juego, entiendo que puede hacerse aún más eficiente.
 
 Este nuevo sistema posee las siguientes ventajas, a criterio de su autor:
 

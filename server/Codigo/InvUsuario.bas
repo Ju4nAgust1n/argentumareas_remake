@@ -356,6 +356,8 @@ On Error GoTo err
     
 270 End If
 
+Exit Sub
+
 err:
 
 Debug.Print "Error: " & Erl
@@ -394,6 +396,8 @@ On Error GoTo err
 70        Call modSendData.SendToAreaByPos(PrepareMessageObjectCreate(ObjData(obj.objIndex).GrhIndex, X, Y), map, X, Y)
 80    End If
 90 End If
+
+Exit Sub
 
 err:
 

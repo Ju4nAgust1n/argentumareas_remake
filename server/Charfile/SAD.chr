@@ -10,9 +10,9 @@ Body=1
 Arma=2
 Escudo=2
 Casco=2
-UpTime=7466
-LastIP1=127.0.0.1 - 4/5/2023:23:37:59
-Position=34-34-57
+UpTime=8105
+LastIP1=127.0.0.1 - 6/5/2023:17:28:37
+Position=34-34-22
 Logged=0
 [FLAGS]
 Muerto=0
@@ -218,4 +218,4 @@ MAS2=0
 MAS3=0
 NroMascotas=0
 [RESEARCH]
-TrainningTime=7443
+TrainningTime=8082

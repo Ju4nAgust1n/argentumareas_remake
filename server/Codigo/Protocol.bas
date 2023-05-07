@@ -104,7 +104,6 @@ Private Enum ServerPacketID
     PlayMidi                ' TM
     PlayWave                ' TW
     guildList               ' GL
-    AreaChanged             ' CA
     PauseToggle             ' BKW
     RainToggle              ' LLU
     CreateFX                ' CFX
@@ -168,7 +167,7 @@ Private Enum ClientPacketID
     Talk                    ';
     Yell                    '-
     Whisper                 '\
-    Walk                    'M
+    walk                    'M
     RequestPositionUpdate   'RPU
     Attack                  'AT
     PickUp                  'AG
@@ -516,7 +515,7 @@ On Error Resume Next
         Case ClientPacketID.Whisper                 '\
             Call HandleWhisper(UserIndex)
         
-        Case ClientPacketID.Walk                    'M
+        Case ClientPacketID.walk                    'M
             Call HandleWalk(UserIndex)
         
         Case ClientPacketID.RequestPositionUpdate   'RPU
@@ -1252,15 +1251,15 @@ On Error Resume Next
     End Select
     
     'Done with this packet, move on to next one or send everything if no more packets found
-    If UserList(UserIndex).incomingData.length > 0 And Err.Number = 0 Then
-        Err.Clear
+    If UserList(UserIndex).incomingData.length > 0 And err.Number = 0 Then
+        err.Clear
         Call HandleIncomingData(UserIndex)
     
-    ElseIf Err.Number <> 0 And Not Err.Number = UserList(UserIndex).incomingData.NotEnoughDataErrCode Then
+    ElseIf err.Number <> 0 And Not err.Number = UserList(UserIndex).incomingData.NotEnoughDataErrCode Then
         'An error ocurred, log it and kick player.
-        Call LogError("Error: " & Err.Number & " [" & Err.description & "] " & " Source: " & Err.source & _
-                        vbTab & " HelpFile: " & Err.HelpFile & vbTab & " HelpContext: " & Err.HelpContext & _
-                        vbTab & " LastDllError: " & Err.LastDllError & vbTab & _
+        Call LogError("Error: " & err.Number & " [" & err.description & "] " & " Source: " & err.source & _
+                        vbTab & " HelpFile: " & err.HelpFile & vbTab & " HelpContext: " & err.HelpContext & _
+                        vbTab & " LastDllError: " & err.LastDllError & vbTab & _
                         " - UserIndex: " & UserIndex & " - producido al manejar el paquete: " & CStr(packetID))
         Call CloseSocket(UserIndex)
     
@@ -1283,12 +1282,12 @@ Private Sub HandleLoginExistingChar(ByVal UserIndex As Integer)
 '***************************************************
 #If SeguridadAlkon Then
     If UserList(UserIndex).incomingData.length < 68 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
 #Else
     If UserList(UserIndex).incomingData.length < 22 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
 #End If
@@ -1356,14 +1355,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -1404,12 +1403,12 @@ Private Sub HandleLoginNewChar(ByVal UserIndex As Integer)
 '***************************************************
 #If SeguridadAlkon Then
     If UserList(UserIndex).incomingData.length < 81 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
 #Else
     If UserList(UserIndex).incomingData.length < 49 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
 #End If
@@ -1504,14 +1503,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -1527,7 +1526,7 @@ Private Sub HandleTalk(ByVal UserIndex As Integer)
 '23/09/2009: ZaMa - Now invisible admins can't send empty chat.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -1584,14 +1583,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -1606,7 +1605,7 @@ Private Sub HandleYell(ByVal UserIndex As Integer)
 '15/07/2009: ZaMa - Now invisible admins yell by console.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -1667,14 +1666,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -1690,7 +1689,7 @@ Private Sub HandleWhisper(ByVal UserIndex As Integer)
 '15/07/2009: ZaMa - Now invisible admins wisper by console.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -1773,14 +1772,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -1795,7 +1794,7 @@ Private Sub HandleWalk(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2294,7 +2293,7 @@ Private Sub HandleDrop(ByVal UserIndex As Integer)
 '07/25/09: Marco - Agregué un checkeo para patear a los usuarios que tiran items mientras comercian.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2327,7 +2326,7 @@ Private Sub HandleDrop(ByVal UserIndex As Integer)
         Else
             'Only drop valid slots
             If Slot <= MAX_INVENTORY_SLOTS And Slot > 0 Then
-                If .Invent.Object(Slot).ObjIndex = 0 Then
+                If .Invent.Object(Slot).objIndex = 0 Then
                     Exit Sub
                 End If
                 
@@ -2349,7 +2348,7 @@ Private Sub HandleCastSpell(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2388,7 +2387,7 @@ Private Sub HandleLeftClick(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2418,7 +2417,7 @@ Private Sub HandleDoubleClick(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2448,7 +2447,7 @@ Private Sub HandleWork(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2528,7 +2527,7 @@ Private Sub HandleUseItem(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2541,7 +2540,7 @@ Private Sub HandleUseItem(ByVal UserIndex As Integer)
         Slot = .incomingData.ReadByte()
         
         If Slot <= MAX_INVENTORY_SLOTS And Slot > 0 Then
-            If .Invent.Object(Slot).ObjIndex = 0 Then Exit Sub
+            If .Invent.Object(Slot).objIndex = 0 Then Exit Sub
         End If
         
         If .flags.Meditando Then
@@ -2564,7 +2563,7 @@ Private Sub HandleCraftBlacksmith(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2596,7 +2595,7 @@ Private Sub HandleCraftCarpenter(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2628,7 +2627,7 @@ Private Sub HandleWorkLeftClick(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -2758,7 +2757,7 @@ Private Sub HandleWorkLeftClick(ByVal UserIndex As Integer)
                     If .Object(DummyInt).amount > 0 Then
                         'QuitarUserInvItem unequipps the ammo, so we equip it again
                         .MunicionEqpSlot = DummyInt
-                        .MunicionEqpObjIndex = .Object(DummyInt).ObjIndex
+                        .MunicionEqpObjIndex = .Object(DummyInt).objIndex
                         .Object(DummyInt).Equipped = 1
                     Else
                         .MunicionEqpSlot = 0
@@ -2899,7 +2898,7 @@ Private Sub HandleWorkLeftClick(ByVal UserIndex As Integer)
                     Exit Sub
                 End If
                 
-                DummyInt = MapData(.Pos.map, X, Y).ObjInfo.ObjIndex
+                DummyInt = MapData(.Pos.map, X, Y).ObjInfo.objIndex
                 
                 If DummyInt > 0 Then
                     If Abs(.Pos.X - X) + Abs(.Pos.Y - Y) > 2 Then
@@ -2935,7 +2934,7 @@ Private Sub HandleWorkLeftClick(ByVal UserIndex As Integer)
                 'Target whatever is in the tile
                 Call LookatTile(UserIndex, .Pos.map, X, Y)
                 
-                DummyInt = MapData(.Pos.map, X, Y).ObjInfo.ObjIndex
+                DummyInt = MapData(.Pos.map, X, Y).ObjInfo.objIndex
                 
                 If DummyInt > 0 Then
                     'Check distance
@@ -2944,7 +2943,7 @@ Private Sub HandleWorkLeftClick(ByVal UserIndex As Integer)
                         Exit Sub
                     End If
                     
-                    DummyInt = MapData(.Pos.map, X, Y).ObjInfo.ObjIndex 'CHECK
+                    DummyInt = MapData(.Pos.map, X, Y).ObjInfo.objIndex 'CHECK
                     '¿Hay un yacimiento donde clickeo?
                     If ObjData(DummyInt).OBJType = eOBJType.otYacimiento Then
                         Call DoMineria(UserIndex)
@@ -2997,8 +2996,8 @@ Private Sub HandleWorkLeftClick(ByVal UserIndex As Integer)
                         End If
                         
                         ''chequeamos que no se zarpe duplicando oro
-                        If .Invent.Object(.flags.TargetObjInvSlot).ObjIndex <> .flags.TargetObjInvIndex Then
-                            If .Invent.Object(.flags.TargetObjInvSlot).ObjIndex = 0 Or .Invent.Object(.flags.TargetObjInvSlot).amount = 0 Then
+                        If .Invent.Object(.flags.TargetObjInvSlot).objIndex <> .flags.TargetObjInvIndex Then
+                            If .Invent.Object(.flags.TargetObjInvSlot).objIndex = 0 Or .Invent.Object(.flags.TargetObjInvSlot).amount = 0 Then
                                 Call WriteConsoleMsg(UserIndex, "No tienes más minerales", FontTypeNames.FONTTYPE_INFO)
                                 Exit Sub
                             End If
@@ -3049,7 +3048,7 @@ Private Sub HandleCreateNewGuild(ByVal UserIndex As Integer)
 '05/11/09: Pato - Ahora se quitan los espacios del principio y del fin del nombre del clan
 '***************************************************
     If UserList(UserIndex).incomingData.length < 9 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3090,14 +3089,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -3112,7 +3111,7 @@ Private Sub HandleSpellInfo(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3160,7 +3159,7 @@ Private Sub HandleEquipItem(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3178,7 +3177,7 @@ Private Sub HandleEquipItem(ByVal UserIndex As Integer)
         'Validate item slot
         If itemSlot > MAX_INVENTORY_SLOTS Or itemSlot < 1 Then Exit Sub
         
-        If .Invent.Object(itemSlot).ObjIndex = 0 Then Exit Sub
+        If .Invent.Object(itemSlot).objIndex = 0 Then Exit Sub
         
         Call EquiparInvItem(UserIndex, itemSlot)
     End With
@@ -3198,7 +3197,7 @@ Private Sub HandleChangeHeading(ByVal UserIndex As Integer)
 ' 06/28/2008: NicoNZ - Sólo se puede cambiar si está inmovilizado.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3249,7 +3248,7 @@ Private Sub HandleModifySkills(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 1 + NUMSKILLS Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3310,7 +3309,7 @@ Private Sub HandleTrain(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3355,7 +3354,7 @@ Private Sub HandleCommerceBuy(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3407,7 +3406,7 @@ Private Sub HandleBankExtractItem(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3452,7 +3451,7 @@ Private Sub HandleCommerceSell(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3498,7 +3497,7 @@ Private Sub HandleBankDeposit(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3543,7 +3542,7 @@ Private Sub HandleForumPost(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3606,14 +3605,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -3628,7 +3627,7 @@ Private Sub HandleMoveSpell(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3660,7 +3659,7 @@ Private Sub HandleMoveBank(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3670,7 +3669,7 @@ Private Sub HandleMoveBank(ByVal UserIndex As Integer)
         
         Dim dir As Integer
         Dim Slot As Byte
-        Dim TempItem As Obj
+        Dim TempItem As obj
         
         If .ReadBoolean() Then
             dir = 1
@@ -3682,16 +3681,16 @@ Private Sub HandleMoveBank(ByVal UserIndex As Integer)
     End With
         
     With UserList(UserIndex)
-        TempItem.ObjIndex = .BancoInvent.Object(Slot).ObjIndex
+        TempItem.objIndex = .BancoInvent.Object(Slot).objIndex
         TempItem.amount = .BancoInvent.Object(Slot).amount
         
         If dir = 1 Then 'Mover arriba
             .BancoInvent.Object(Slot) = .BancoInvent.Object(Slot - 1)
-            .BancoInvent.Object(Slot - 1).ObjIndex = TempItem.ObjIndex
+            .BancoInvent.Object(Slot - 1).objIndex = TempItem.objIndex
             .BancoInvent.Object(Slot - 1).amount = TempItem.amount
         Else 'mover abajo
             .BancoInvent.Object(Slot) = .BancoInvent.Object(Slot + 1)
-            .BancoInvent.Object(Slot + 1).ObjIndex = TempItem.ObjIndex
+            .BancoInvent.Object(Slot + 1).objIndex = TempItem.objIndex
             .BancoInvent.Object(Slot + 1).amount = TempItem.amount
         End If
     End With
@@ -3713,7 +3712,7 @@ Private Sub HandleClanCodexUpdate(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3740,14 +3739,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -3762,7 +3761,7 @@ Private Sub HandleUserCommerceOffer(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 6 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3859,7 +3858,7 @@ Private Sub HandleGuildAcceptPeace(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3893,14 +3892,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -3915,7 +3914,7 @@ Private Sub HandleGuildRejectAlliance(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -3949,14 +3948,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -3971,7 +3970,7 @@ Private Sub HandleGuildRejectPeace(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4005,14 +4004,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4027,7 +4026,7 @@ Private Sub HandleGuildAcceptAlliance(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4061,14 +4060,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4083,7 +4082,7 @@ Private Sub HandleGuildOfferPeace(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4115,14 +4114,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4137,7 +4136,7 @@ Private Sub HandleGuildOfferAlliance(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4169,14 +4168,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4191,7 +4190,7 @@ Private Sub HandleGuildAllianceDetails(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4224,14 +4223,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4246,7 +4245,7 @@ Private Sub HandleGuildPeaceDetails(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4279,14 +4278,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4301,7 +4300,7 @@ Private Sub HandleGuildRequestJoinerInfo(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4333,14 +4332,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4389,7 +4388,7 @@ Private Sub HandleGuildDeclareWar(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4426,14 +4425,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4448,7 +4447,7 @@ Private Sub HandleGuildNewWebsite(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4469,14 +4468,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4491,7 +4490,7 @@ Private Sub HandleGuildAcceptNewMember(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4529,14 +4528,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4552,7 +4551,7 @@ Private Sub HandleGuildRejectNewMember(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4592,14 +4591,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4614,7 +4613,7 @@ Private Sub HandleGuildKickMember(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4647,14 +4646,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4669,7 +4668,7 @@ Private Sub HandleGuildUpdateNews(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4690,14 +4689,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4712,7 +4711,7 @@ Private Sub HandleGuildMemberInfo(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4733,14 +4732,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4780,7 +4779,7 @@ Private Sub HandleGuildRequestMembership(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4812,14 +4811,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -4834,7 +4833,7 @@ Private Sub HandleGuildRequestDetails(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -4855,14 +4854,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -5786,7 +5785,7 @@ Private Sub HandleGuildMessage(ByVal UserIndex As Integer)
 '15/07/2009: ZaMa - Now invisible admins only speak by console
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -5821,14 +5820,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -5843,7 +5842,7 @@ Private Sub HandlePartyMessage(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -5875,14 +5874,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -5897,7 +5896,7 @@ Private Sub HandleCentinelReport(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -5965,7 +5964,7 @@ Private Sub HandleCouncilMessage(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -5999,14 +5998,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6021,7 +6020,7 @@ Private Sub HandleRoleMasterRequest(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6049,14 +6048,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6097,7 +6096,7 @@ Private Sub HandleBugReport(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6130,14 +6129,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6152,7 +6151,7 @@ Private Sub HandleChangeDescription(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6186,14 +6185,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6208,7 +6207,7 @@ Private Sub HandleGuildVote(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6238,14 +6237,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6260,7 +6259,7 @@ Private Sub HandlePunishments(ByVal UserIndex As Integer)
 '25/08/2009: ZaMa - Now only admins can see other admins' punishment list
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6317,14 +6316,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6340,12 +6339,12 @@ Private Sub HandleChangePassword(ByVal UserIndex As Integer)
 '***************************************************
 #If SeguridadAlkon Then
     If UserList(UserIndex).incomingData.length < 65 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
 #Else
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
 #End If
@@ -6390,14 +6389,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 
@@ -6413,7 +6412,7 @@ Private Sub HandleGamble(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6476,7 +6475,7 @@ Private Sub HandleInquiryVote(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6504,7 +6503,7 @@ Private Sub HandleBankExtractGold(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6610,7 +6609,7 @@ Private Sub HandleBankDepositGold(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6665,7 +6664,7 @@ Private Sub HandleDenounce(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6696,14 +6695,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6718,7 +6717,7 @@ Private Sub HandleGuildFundate(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6771,7 +6770,7 @@ Private Sub HandlePartyKick(ByVal UserIndex As Integer)
 '- 05/05/09: Now it uses "UserPuedeEjecutarComandos" to check if the user can use party commands
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6809,14 +6808,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6832,7 +6831,7 @@ Private Sub HandlePartySetLeader(ByVal UserIndex As Integer)
 '- 05/05/09: Now it uses "UserPuedeEjecutarComandos" to check if the user can use party commands
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6875,14 +6874,14 @@ Private Sub HandlePartySetLeader(ByVal UserIndex As Integer)
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6898,7 +6897,7 @@ Private Sub HandlePartyAcceptMember(ByVal UserIndex As Integer)
 '- 05/05/09: Now it uses "UserPuedeEjecutarComandos" to check if the user can use party commands
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -6954,14 +6953,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -6976,7 +6975,7 @@ Private Sub HandleGuildMemberList(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7023,14 +7022,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7045,7 +7044,7 @@ Private Sub HandleGMMessage(ByVal UserIndex As Integer)
 'Last Modification by: (liquid)
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7079,14 +7078,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7202,7 +7201,7 @@ Private Sub HandleGoNearby(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7267,14 +7266,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7289,7 +7288,7 @@ Private Sub HandleComment(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7316,14 +7315,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7361,7 +7360,7 @@ Private Sub HandleWhere(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7397,14 +7396,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7419,7 +7418,7 @@ Private Sub HandleCreaturesInMap(ByVal UserIndex As Integer)
 'Pablo (ToxicWaste): modificaciones generales para simplificar la visualización.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7556,7 +7555,7 @@ Private Sub HandleWarpChar(ByVal UserIndex As Integer)
 '26/03/2009: ZaMa -  Chequeo que no se teletransporte a un tile donde haya un char o npc.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 7 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7607,14 +7606,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7629,7 +7628,7 @@ Private Sub HandleSilence(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7675,14 +7674,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7717,7 +7716,7 @@ Private Sub HandleSOSRemove(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7742,14 +7741,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7764,7 +7763,7 @@ Private Sub HandleGoToChar(ByVal UserIndex As Integer)
 '26/03/2009: ZaMa -  Chequeo que no se teletransporte a un tile donde haya un char o npc.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -7813,14 +7812,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -7990,7 +7989,7 @@ Private Sub HandleJail(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 6 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8058,14 +8057,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -8124,7 +8123,7 @@ Private Sub HandleWarnUser(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8179,14 +8178,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -8202,7 +8201,7 @@ Private Sub HandleEditChar(ByVal UserIndex As Integer)
 '11/06/2009: ZaMa - Todos los comandos se pueden usar aunque el pj este offline
 '***************************************************
     If UserList(UserIndex).incomingData.length < 8 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8566,14 +8565,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 
@@ -8589,7 +8588,7 @@ Private Sub HandleRequestCharInfo(ByVal UserIndex As Integer)
 'Last Modification by: (liquid).. alto bug zapallo..
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8631,14 +8630,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -8653,7 +8652,7 @@ Private Sub HandleRequestCharStats(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8690,14 +8689,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -8712,7 +8711,7 @@ Private Sub HandleRequestCharGold(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8749,14 +8748,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -8771,7 +8770,7 @@ Private Sub HandleRequestCharInventory(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8809,14 +8808,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -8831,7 +8830,7 @@ Private Sub HandleRequestCharBank(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8869,14 +8868,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -8891,7 +8890,7 @@ Private Sub HandleRequestCharSkills(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -8940,14 +8939,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -8962,7 +8961,7 @@ Private Sub HandleReviveChar(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9023,14 +9022,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9125,7 +9124,7 @@ Private Sub HandleForgive(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9162,14 +9161,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9184,7 +9183,7 @@ Private Sub HandleKick(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9227,14 +9226,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9249,7 +9248,7 @@ Private Sub HandleExecute(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9289,14 +9288,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9311,7 +9310,7 @@ Private Sub HandleBanChar(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9340,14 +9339,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9362,7 +9361,7 @@ Private Sub HandleUnbanChar(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9413,14 +9412,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9461,7 +9460,7 @@ Private Sub HandleSummonChar(ByVal UserIndex As Integer)
 '26/03/2009: ZaMa - Chequeo que no se teletransporte donde haya un char o npc
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9507,14 +9506,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9550,7 +9549,7 @@ Private Sub HandleSpawnCreature(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9626,7 +9625,7 @@ Private Sub HandleServerMessage(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9655,14 +9654,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9677,7 +9676,7 @@ Private Sub HandleNickToIP(ByVal UserIndex As Integer)
 'Pablo (ToxicWaste): Agrego para uqe el /nick2ip tambien diga los nicks en esa ip por pedido de la DGM.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9736,14 +9735,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9758,7 +9757,7 @@ Private Sub HandleIPToNick(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9813,7 +9812,7 @@ Private Sub HandleGuildOnlineMembers(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9850,14 +9849,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -9872,7 +9871,7 @@ Private Sub HandleTeleportCreate(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -9895,13 +9894,13 @@ Private Sub HandleTeleportCreate(ByVal UserIndex As Integer)
         If Not MapaValido(mapa) Or Not InMapBounds(mapa, X, Y) Then _
             Exit Sub
         
-        If MapData(.Pos.map, .Pos.X, .Pos.Y - 1).ObjInfo.ObjIndex > 0 Then _
+        If MapData(.Pos.map, .Pos.X, .Pos.Y - 1).ObjInfo.objIndex > 0 Then _
             Exit Sub
         
         If MapData(.Pos.map, .Pos.X, .Pos.Y - 1).TileExit.map > 0 Then _
             Exit Sub
         
-        If MapData(mapa, X, Y).ObjInfo.ObjIndex > 0 Then
+        If MapData(mapa, X, Y).ObjInfo.objIndex > 0 Then
             Call WriteConsoleMsg(UserIndex, "Hay un objeto en el piso en ese lugar", FontTypeNames.FONTTYPE_INFO)
             Exit Sub
         End If
@@ -9911,9 +9910,9 @@ Private Sub HandleTeleportCreate(ByVal UserIndex As Integer)
             Exit Sub
         End If
         
-        Dim ET As Obj
+        Dim ET As obj
         ET.amount = 1
-        ET.ObjIndex = 378
+        ET.objIndex = 378
         
         Call MakeObj(ET, .Pos.map, .Pos.X, .Pos.Y - 1)
         
@@ -9954,14 +9953,14 @@ Private Sub HandleTeleportDestroy(ByVal UserIndex As Integer)
         If Not InMapBounds(mapa, X, Y) Then Exit Sub
         
         With MapData(mapa, X, Y)
-            If .ObjInfo.ObjIndex = 0 Then Exit Sub
+            If .ObjInfo.objIndex = 0 Then Exit Sub
             
-            If ObjData(.ObjInfo.ObjIndex).OBJType = eOBJType.otTeleport And .TileExit.map > 0 Then
+            If ObjData(.ObjInfo.objIndex).OBJType = eOBJType.otTeleport And .TileExit.map > 0 Then
                 Call LogGM(UserList(UserIndex).name, "/DT: " & mapa & "," & X & "," & Y)
                 
                 Call EraseObj(.ObjInfo.amount, mapa, X, Y)
                 
-                If MapData(.TileExit.map, .TileExit.X, .TileExit.Y).ObjInfo.ObjIndex = 651 Then
+                If MapData(.TileExit.map, .TileExit.X, .TileExit.Y).ObjInfo.objIndex = 651 Then
                     Call EraseObj(1, .TileExit.map, .TileExit.X, .TileExit.Y)
                 End If
                 
@@ -10009,7 +10008,7 @@ Private Sub HandleSetCharDescription(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10042,14 +10041,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10064,7 +10063,7 @@ Private Sub HanldeForceMIDIToMap(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10108,7 +10107,7 @@ Private Sub HandleForceWAVEToMap(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 6 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10153,7 +10152,7 @@ Private Sub HandleRoyalArmyMessage(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10180,14 +10179,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10202,7 +10201,7 @@ Private Sub HandleChaosLegionMessage(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10229,14 +10228,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10251,7 +10250,7 @@ Private Sub HandleCitizenMessage(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10278,14 +10277,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10300,7 +10299,7 @@ Private Sub HandleCriminalMessage(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10327,14 +10326,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10349,7 +10348,7 @@ Private Sub HandleTalkAsNPC(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10381,14 +10380,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10414,8 +10413,8 @@ Private Sub HandleDestroyAllItemsInArea(ByVal UserIndex As Integer)
         For Y = .Pos.Y - MinYBorder + 1 To .Pos.Y + MinYBorder - 1
             For X = .Pos.X - MinXBorder + 1 To .Pos.X + MinXBorder - 1
                 If X > 0 And Y > 0 And X < 101 And Y < 101 Then
-                    If MapData(.Pos.map, X, Y).ObjInfo.ObjIndex > 0 Then
-                        If ItemNoEsDeMapa(MapData(.Pos.map, X, Y).ObjInfo.ObjIndex) Then
+                    If MapData(.Pos.map, X, Y).ObjInfo.objIndex > 0 Then
+                        If ItemNoEsDeMapa(MapData(.Pos.map, X, Y).ObjInfo.objIndex) Then
                             Call EraseObj(MAX_INVENTORY_OBJS, .Pos.map, X, Y)
                         End If
                     End If
@@ -10439,7 +10438,7 @@ Private Sub HandleAcceptRoyalCouncilMember(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10479,14 +10478,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10501,7 +10500,7 @@ Private Sub HandleAcceptChaosCouncilMember(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10542,14 +10541,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10576,7 +10575,7 @@ Private Sub HandleItemsInTheFloor(ByVal UserIndex As Integer)
         
         For X = 5 To 95
             For Y = 5 To 95
-                tObj = MapData(.Pos.map, X, Y).ObjInfo.ObjIndex
+                tObj = MapData(.Pos.map, X, Y).ObjInfo.objIndex
                 If tObj > 0 Then
                     If ObjData(tObj).OBJType <> eOBJType.otArboles Then
                         Call WriteConsoleMsg(UserIndex, "(" & X & "," & Y & ") " & ObjData(tObj).name, FontTypeNames.FONTTYPE_INFO)
@@ -10599,7 +10598,7 @@ Private Sub HandleMakeDumb(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10633,14 +10632,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10655,7 +10654,7 @@ Private Sub HandleMakeDumbNoMore(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10690,14 +10689,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10733,7 +10732,7 @@ Private Sub HandleCouncilKick(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10788,14 +10787,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -10810,7 +10809,7 @@ Private Sub HandleSetTrigger(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10930,7 +10929,7 @@ Private Sub HandleGuildBan(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -10996,14 +10995,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -11020,7 +11019,7 @@ Private Sub HandleBanIP(ByVal UserIndex As Integer)
 '07/02/09 Pato - Ahora no es posible saber si un gm está o no online.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 6 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11083,14 +11082,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -11105,7 +11104,7 @@ Private Sub HandleUnbanIP(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11142,7 +11141,7 @@ Private Sub HandleCreateItem(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11157,7 +11156,7 @@ Private Sub HandleCreateItem(ByVal UserIndex As Integer)
         
         Call LogGM(.name, "/CI: " & tObj)
         
-        If MapData(.Pos.map, .Pos.X, .Pos.Y - 1).ObjInfo.ObjIndex > 0 Then _
+        If MapData(.Pos.map, .Pos.X, .Pos.Y - 1).ObjInfo.objIndex > 0 Then _
             Exit Sub
         
         If MapData(.Pos.map, .Pos.X, .Pos.Y - 1).TileExit.map > 0 Then _
@@ -11169,11 +11168,11 @@ Private Sub HandleCreateItem(ByVal UserIndex As Integer)
         'Is the object not null?
         If LenB(ObjData(tObj).name) = 0 Then Exit Sub
         
-        Dim Objeto As Obj
+        Dim Objeto As obj
         Call WriteConsoleMsg(UserIndex, "ATENCION: FUERON CREADOS ***100*** ITEMS!, TIRE Y /DEST LOS QUE NO NECESITE!!", FontTypeNames.FONTTYPE_GUILD)
         
         Objeto.amount = 100
-        Objeto.ObjIndex = tObj
+        Objeto.objIndex = tObj
         Call MakeObj(Objeto, .Pos.map, .Pos.X, .Pos.Y - 1)
     End With
 End Sub
@@ -11195,11 +11194,11 @@ Private Sub HandleDestroyItems(ByVal UserIndex As Integer)
         
         If .flags.Privilegios And (PlayerType.User Or PlayerType.Consejero Or PlayerType.SemiDios) Then Exit Sub
         
-        If MapData(.Pos.map, .Pos.X, .Pos.Y).ObjInfo.ObjIndex = 0 Then Exit Sub
+        If MapData(.Pos.map, .Pos.X, .Pos.Y).ObjInfo.objIndex = 0 Then Exit Sub
         
         Call LogGM(.name, "/DEST")
         
-        If ObjData(MapData(.Pos.map, .Pos.X, .Pos.Y).ObjInfo.ObjIndex).OBJType = eOBJType.otTeleport Then
+        If ObjData(MapData(.Pos.map, .Pos.X, .Pos.Y).ObjInfo.objIndex).OBJType = eOBJType.otTeleport Then
             Call WriteConsoleMsg(UserIndex, "No puede destruir teleports así. Utilice /DT.", FontTypeNames.FONTTYPE_INFO)
             Exit Sub
         End If
@@ -11220,7 +11219,7 @@ Private Sub HandleChaosLegionKick(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11273,14 +11272,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -11295,7 +11294,7 @@ Private Sub HandleRoyalArmyKick(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11348,14 +11347,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -11370,7 +11369,7 @@ Private Sub HandleForceMIDIAll(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11401,7 +11400,7 @@ Private Sub HandleForceWAVEAll(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11430,7 +11429,7 @@ Private Sub HandleRemovePunishment(ByVal UserIndex As Integer)
 'Pablo (ToxicWaste): 1/05/07, You can now edit the punishment.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 6 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11480,14 +11479,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -11586,7 +11585,7 @@ Private Sub HandleLastIP(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11650,14 +11649,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -11673,7 +11672,7 @@ Public Sub HandleChatColor(ByVal UserIndex As Integer)
 'Change the user`s chat color
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -11724,7 +11723,7 @@ Public Sub HandleCheckSlot(ByVal UserIndex As Integer)
 'Check one Users Slot in Particular from Inventory
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
 
@@ -11752,8 +11751,8 @@ On Error GoTo Errhandler
                
             If tIndex > 0 Then
                 If Slot > 0 And Slot <= MAX_INVENTORY_SLOTS Then
-                    If UserList(tIndex).Invent.Object(Slot).ObjIndex > 0 Then
-                        Call WriteConsoleMsg(UserIndex, " Objeto " & Slot & ") " & ObjData(UserList(tIndex).Invent.Object(Slot).ObjIndex).name & " Cantidad:" & UserList(tIndex).Invent.Object(Slot).amount, FontTypeNames.FONTTYPE_INFO)
+                    If UserList(tIndex).Invent.Object(Slot).objIndex > 0 Then
+                        Call WriteConsoleMsg(UserIndex, " Objeto " & Slot & ") " & ObjData(UserList(tIndex).Invent.Object(Slot).objIndex).name & " Cantidad:" & UserList(tIndex).Invent.Object(Slot).amount, FontTypeNames.FONTTYPE_INFO)
                     Else
                         Call WriteConsoleMsg(UserIndex, "No hay Objeto en slot seleccionado", FontTypeNames.FONTTYPE_INFO)
                     End If
@@ -11771,14 +11770,14 @@ On Error GoTo Errhandler
     
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -12058,7 +12057,7 @@ Public Sub HandleChangeMapInfoBackup(ByVal UserIndex As Integer)
 'Change the backup`s info of the map
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12101,7 +12100,7 @@ Public Sub HandleChangeMapInfoPK(ByVal UserIndex As Integer)
 'Change the pk`s info of the  map
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12138,7 +12137,7 @@ Public Sub HandleChangeMapInfoRestricted(ByVal UserIndex As Integer)
 'Restringido -> Options: "NEWBIE", "NO", "ARMADA", "CAOS", "FACCION".
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12172,14 +12171,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -12194,7 +12193,7 @@ Public Sub HandleChangeMapInfoNoMagic(ByVal UserIndex As Integer)
 'MagiaSinEfecto -> Options: "1" , "0".
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12227,7 +12226,7 @@ Public Sub HandleChangeMapInfoNoInvi(ByVal UserIndex As Integer)
 'InviSinEfecto -> Options: "1", "0"
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12260,7 +12259,7 @@ Public Sub HandleChangeMapInfoNoResu(ByVal UserIndex As Integer)
 'ResuSinEfecto -> Options: "1", "0"
 '***************************************************
     If UserList(UserIndex).incomingData.length < 2 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12293,7 +12292,7 @@ Public Sub HandleChangeMapInfoLand(ByVal UserIndex As Integer)
 'Terreno -> Opciones: "BOSQUE", "NIEVE", "DESIERTO", "CIUDAD", "CAMPO", "DUNGEON".
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12328,14 +12327,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -12350,7 +12349,7 @@ Public Sub HandleChangeMapInfoZone(ByVal UserIndex As Integer)
 'Zona -> Opciones: "BOSQUE", "NIEVE", "DESIERTO", "CIUDAD", "CAMPO", "DUNGEON".
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12385,14 +12384,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -12433,7 +12432,7 @@ Public Sub HandleShowGuildMessages(ByVal UserIndex As Integer)
 'Allows admins to read guild messages
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12460,14 +12459,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -12544,7 +12543,7 @@ Public Sub HandleAlterName(ByVal UserIndex As Integer)
 'Change user name
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12614,14 +12613,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -12636,7 +12635,7 @@ Public Sub HandleAlterMail(ByVal UserIndex As Integer)
 'Change user password
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12676,14 +12675,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -12698,7 +12697,7 @@ Public Sub HandleAlterPassword(ByVal UserIndex As Integer)
 'Change user password
 '***************************************************
     If UserList(UserIndex).incomingData.length < 5 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12741,14 +12740,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -12763,7 +12762,7 @@ Public Sub HandleCreateNPC(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12798,7 +12797,7 @@ Public Sub HandleCreateNPCWithRespawn(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12832,7 +12831,7 @@ Public Sub HandleImperialArmour(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12841,25 +12840,25 @@ Public Sub HandleImperialArmour(ByVal UserIndex As Integer)
         Call .incomingData.ReadByte
         
         Dim index As Byte
-        Dim ObjIndex As Integer
+        Dim objIndex As Integer
         
         index = .incomingData.ReadByte()
-        ObjIndex = .incomingData.ReadInteger()
+        objIndex = .incomingData.ReadInteger()
         
         If .flags.Privilegios And (PlayerType.User Or PlayerType.Consejero Or PlayerType.SemiDios Or PlayerType.RoleMaster) Then Exit Sub
         
         Select Case index
             Case 1
-                ArmaduraImperial1 = ObjIndex
+                ArmaduraImperial1 = objIndex
             
             Case 2
-                ArmaduraImperial2 = ObjIndex
+                ArmaduraImperial2 = objIndex
             
             Case 3
-                ArmaduraImperial3 = ObjIndex
+                ArmaduraImperial3 = objIndex
             
             Case 4
-                TunicaMagoImperial = ObjIndex
+                TunicaMagoImperial = objIndex
         End Select
     End With
 End Sub
@@ -12876,7 +12875,7 @@ Public Sub HandleChaosArmour(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 4 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -12885,25 +12884,25 @@ Public Sub HandleChaosArmour(ByVal UserIndex As Integer)
         Call .incomingData.ReadByte
         
         Dim index As Byte
-        Dim ObjIndex As Integer
+        Dim objIndex As Integer
         
         index = .incomingData.ReadByte()
-        ObjIndex = .incomingData.ReadInteger()
+        objIndex = .incomingData.ReadInteger()
         
         If .flags.Privilegios And (PlayerType.User Or PlayerType.Consejero Or PlayerType.SemiDios Or PlayerType.RoleMaster) Then Exit Sub
         
         Select Case index
             Case 1
-                ArmaduraCaos1 = ObjIndex
+                ArmaduraCaos1 = objIndex
             
             Case 2
-                ArmaduraCaos2 = ObjIndex
+                ArmaduraCaos2 = objIndex
             
             Case 3
-                ArmaduraCaos3 = ObjIndex
+                ArmaduraCaos3 = objIndex
             
             Case 4
-                TunicaMagoCaos = ObjIndex
+                TunicaMagoCaos = objIndex
         End Select
     End With
 End Sub
@@ -13009,7 +13008,7 @@ Public Sub HandleTurnCriminal(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -13041,14 +13040,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -13063,7 +13062,7 @@ Public Sub HandleResetFactions(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -13120,14 +13119,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -13142,7 +13141,7 @@ Public Sub HandleRemoveCharFromGuild(ByVal UserIndex As Integer)
 '
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -13179,14 +13178,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -13201,7 +13200,7 @@ Public Sub HandleRequestCharMail(ByVal UserIndex As Integer)
 'Request user mail
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -13233,14 +13232,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -13255,7 +13254,7 @@ Public Sub HandleSystemMessage(ByVal UserIndex As Integer)
 'Send a message to all the users
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -13283,14 +13282,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -13308,7 +13307,7 @@ Public Sub HandleSetMOTD(ByVal UserIndex As Integer)
 '   - Fixed a bug that caused the player to be kicked.
 '***************************************************
     If UserList(UserIndex).incomingData.length < 3 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
     
@@ -13352,14 +13351,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -13429,7 +13428,7 @@ Public Sub HandleSetIniVar(ByVal UserIndex As Integer)
 'Modify server.ini
 '***************************************************
     If UserList(UserIndex).incomingData.length < 6 Then
-        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
 
@@ -13472,14 +13471,14 @@ On Error GoTo Errhandler
 
 Errhandler:
     Dim error As Long
-    error = Err.Number
+    error = err.Number
 On Error GoTo 0
     
     'Destroy auxiliar buffer
     Set buffer = Nothing
     
     If error <> 0 Then _
-        Err.Raise error
+        err.Raise error
 End Sub
 
 ''
@@ -13499,7 +13498,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13522,7 +13521,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13546,7 +13545,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13569,7 +13568,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13592,7 +13591,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13615,7 +13614,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13638,7 +13637,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13661,7 +13660,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13684,7 +13683,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13707,7 +13706,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13730,7 +13729,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13753,7 +13752,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13776,7 +13775,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13799,7 +13798,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13822,7 +13821,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13845,7 +13844,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13868,7 +13867,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13891,7 +13890,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13914,7 +13913,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13937,7 +13936,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13960,7 +13959,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -13983,7 +13982,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14006,7 +14005,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14029,7 +14028,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14052,7 +14051,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14078,7 +14077,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14104,7 +14103,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14130,7 +14129,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14156,7 +14155,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14182,7 +14181,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14211,7 +14210,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14238,7 +14237,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14267,7 +14266,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14296,7 +14295,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14323,7 +14322,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14354,7 +14353,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14385,7 +14384,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14411,7 +14410,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14436,7 +14435,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14460,7 +14459,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14487,7 +14486,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14513,7 +14512,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14539,7 +14538,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14580,7 +14579,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14604,7 +14603,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14630,7 +14629,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14647,7 +14646,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14681,7 +14680,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14707,7 +14706,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14732,7 +14731,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14763,7 +14762,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14788,7 +14787,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14815,7 +14814,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14854,34 +14853,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
-        Call FlushBuffer(UserIndex)
-        Resume
-    End If
-End Sub
-
-''
-' Writes the "AreaChanged" message to the given user's outgoing data buffer.
-'
-' @param    UserIndex User to which the message is intended.
-' @remarks  The data is not actually sent until the buffer is properly flushed.
-
-Public Sub WriteAreaChanged(ByVal UserIndex As Integer)
-'***************************************************
-'Author: Juan Martín Sotuyo Dodero (Maraxus)
-'Last Modification: 05/17/06
-'Writes the "AreaChanged" message to the given user's outgoing data buffer
-'***************************************************
-On Error GoTo Errhandler
-    With UserList(UserIndex).outgoingData
-        Call .WriteByte(ServerPacketID.AreaChanged)
-        Call .WriteByte(UserList(UserIndex).Pos.X)
-        Call .WriteByte(UserList(UserIndex).Pos.Y)
-    End With
-Exit Sub
-
-Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14904,7 +14876,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14927,7 +14899,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14953,7 +14925,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -14988,7 +14960,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15015,7 +14987,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15039,16 +15011,16 @@ On Error GoTo Errhandler
         Call .WriteByte(ServerPacketID.ChangeInventorySlot)
         Call .WriteByte(Slot)
         
-        Dim ObjIndex As Integer
+        Dim objIndex As Integer
         Dim obData As ObjData
         
-        ObjIndex = UserList(UserIndex).Invent.Object(Slot).ObjIndex
+        objIndex = UserList(UserIndex).Invent.Object(Slot).objIndex
         
-        If ObjIndex > 0 Then
-            obData = ObjData(ObjIndex)
+        If objIndex > 0 Then
+            obData = ObjData(objIndex)
         End If
         
-        Call .WriteInteger(ObjIndex)
+        Call .WriteInteger(objIndex)
         Call .WriteASCIIString(obData.name)
         Call .WriteInteger(UserList(UserIndex).Invent.Object(Slot).amount)
         Call .WriteBoolean(UserList(UserIndex).Invent.Object(Slot).Equipped)
@@ -15062,7 +15034,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15086,15 +15058,15 @@ On Error GoTo Errhandler
         Call .WriteByte(ServerPacketID.ChangeBankSlot)
         Call .WriteByte(Slot)
         
-        Dim ObjIndex As Integer
+        Dim objIndex As Integer
         Dim obData As ObjData
         
-        ObjIndex = UserList(UserIndex).BancoInvent.Object(Slot).ObjIndex
+        objIndex = UserList(UserIndex).BancoInvent.Object(Slot).objIndex
         
-        Call .WriteInteger(ObjIndex)
+        Call .WriteInteger(objIndex)
         
-        If ObjIndex > 0 Then
-            obData = ObjData(ObjIndex)
+        If objIndex > 0 Then
+            obData = ObjData(objIndex)
         End If
         
         Call .WriteASCIIString(obData.name)
@@ -15109,7 +15081,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15143,7 +15115,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15173,7 +15145,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15193,7 +15165,7 @@ Public Sub WriteBlacksmithWeapons(ByVal UserIndex As Integer)
 '***************************************************
 On Error GoTo Errhandler
     Dim i As Long
-    Dim Obj As ObjData
+    Dim obj As ObjData
     Dim validIndexes() As Integer
     Dim Count As Integer
     
@@ -15215,18 +15187,18 @@ On Error GoTo Errhandler
         
         ' Write the needed data of each object
         For i = 1 To Count
-            Obj = ObjData(ArmasHerrero(validIndexes(i)))
-            Call .WriteASCIIString(Obj.name)
-            Call .WriteInteger(Obj.LingH)
-            Call .WriteInteger(Obj.LingP)
-            Call .WriteInteger(Obj.LingO)
+            obj = ObjData(ArmasHerrero(validIndexes(i)))
+            Call .WriteASCIIString(obj.name)
+            Call .WriteInteger(obj.LingH)
+            Call .WriteInteger(obj.LingP)
+            Call .WriteInteger(obj.LingO)
             Call .WriteInteger(ArmasHerrero(validIndexes(i)))
         Next i
     End With
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15246,7 +15218,7 @@ Public Sub WriteBlacksmithArmors(ByVal UserIndex As Integer)
 '***************************************************
 On Error GoTo Errhandler
     Dim i As Long
-    Dim Obj As ObjData
+    Dim obj As ObjData
     Dim validIndexes() As Integer
     Dim Count As Integer
     
@@ -15268,18 +15240,18 @@ On Error GoTo Errhandler
         
         ' Write the needed data of each object
         For i = 1 To Count
-            Obj = ObjData(ArmadurasHerrero(validIndexes(i)))
-            Call .WriteASCIIString(Obj.name)
-            Call .WriteInteger(Obj.LingH)
-            Call .WriteInteger(Obj.LingP)
-            Call .WriteInteger(Obj.LingO)
+            obj = ObjData(ArmadurasHerrero(validIndexes(i)))
+            Call .WriteASCIIString(obj.name)
+            Call .WriteInteger(obj.LingH)
+            Call .WriteInteger(obj.LingP)
+            Call .WriteInteger(obj.LingO)
             Call .WriteInteger(ArmadurasHerrero(validIndexes(i)))
         Next i
     End With
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15299,7 +15271,7 @@ Public Sub WriteCarpenterObjects(ByVal UserIndex As Integer)
 '***************************************************
 On Error GoTo Errhandler
     Dim i As Long
-    Dim Obj As ObjData
+    Dim obj As ObjData
     Dim validIndexes() As Integer
     Dim Count As Integer
     
@@ -15321,16 +15293,16 @@ On Error GoTo Errhandler
         
         ' Write the needed data of each object
         For i = 1 To Count
-            Obj = ObjData(ObjCarpintero(validIndexes(i)))
-            Call .WriteASCIIString(Obj.name)
-            Call .WriteInteger(Obj.Madera)
+            obj = ObjData(ObjCarpintero(validIndexes(i)))
+            Call .WriteASCIIString(obj.name)
+            Call .WriteInteger(obj.Madera)
             Call .WriteInteger(ObjCarpintero(validIndexes(i)))
         Next i
     End With
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15353,7 +15325,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15377,7 +15349,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15400,7 +15372,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15423,7 +15395,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15436,7 +15408,7 @@ End Sub
 ' @param    objIndex Index of the signal to be displayed.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteShowSignal(ByVal UserIndex As Integer, ByVal ObjIndex As Integer)
+Public Sub WriteShowSignal(ByVal UserIndex As Integer, ByVal objIndex As Integer)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -15445,13 +15417,13 @@ Public Sub WriteShowSignal(ByVal UserIndex As Integer, ByVal ObjIndex As Integer
 On Error GoTo Errhandler
     With UserList(UserIndex).outgoingData
         Call .WriteByte(ServerPacketID.ShowSignal)
-        Call .WriteASCIIString(ObjData(ObjIndex).texto)
-        Call .WriteInteger(ObjData(ObjIndex).GrhSecundario)
+        Call .WriteASCIIString(ObjData(objIndex).texto)
+        Call .WriteInteger(ObjData(objIndex).GrhSecundario)
     End With
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15466,7 +15438,7 @@ End Sub
 ' @param    price       The value the NPC asks for the object.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteChangeNPCInventorySlot(ByVal UserIndex As Integer, ByVal Slot As Byte, ByRef Obj As Obj, ByVal price As Single)
+Public Sub WriteChangeNPCInventorySlot(ByVal UserIndex As Integer, ByVal Slot As Byte, ByRef obj As obj, ByVal price As Single)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 06/13/08
@@ -15476,18 +15448,18 @@ Public Sub WriteChangeNPCInventorySlot(ByVal UserIndex As Integer, ByVal Slot As
 On Error GoTo Errhandler
     Dim ObjInfo As ObjData
     
-    If Obj.ObjIndex >= LBound(ObjData()) And Obj.ObjIndex <= UBound(ObjData()) Then
-        ObjInfo = ObjData(Obj.ObjIndex)
+    If obj.objIndex >= LBound(ObjData()) And obj.objIndex <= UBound(ObjData()) Then
+        ObjInfo = ObjData(obj.objIndex)
     End If
     
     With UserList(UserIndex).outgoingData
         Call .WriteByte(ServerPacketID.ChangeNPCInventorySlot)
         Call .WriteByte(Slot)
         Call .WriteASCIIString(ObjInfo.name)
-        Call .WriteInteger(Obj.amount)
+        Call .WriteInteger(obj.amount)
         Call .WriteSingle(price)
         Call .WriteInteger(ObjInfo.GrhIndex)
-        Call .WriteInteger(Obj.ObjIndex)
+        Call .WriteInteger(obj.objIndex)
         Call .WriteByte(ObjInfo.OBJType)
         Call .WriteInteger(ObjInfo.MaxHIT)
         Call .WriteInteger(ObjInfo.MinHIT)
@@ -15496,7 +15468,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15525,7 +15497,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15558,7 +15530,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15594,7 +15566,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15620,7 +15592,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15648,7 +15620,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15671,7 +15643,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15696,7 +15668,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15727,7 +15699,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15750,7 +15722,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15773,7 +15745,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15796,7 +15768,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15827,7 +15799,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15865,7 +15837,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15919,7 +15891,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15949,7 +15921,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -15988,7 +15960,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16027,7 +15999,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16089,7 +16061,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16157,7 +16129,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16228,7 +16200,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16251,7 +16223,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16277,7 +16249,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16305,7 +16277,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16328,7 +16300,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16351,7 +16323,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16365,7 +16337,7 @@ End Sub
 ' @param    amount The number of objects offered.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteChangeUserTradeSlot(ByVal UserIndex As Integer, ByVal ObjIndex As Integer, ByVal amount As Long)
+Public Sub WriteChangeUserTradeSlot(ByVal UserIndex As Integer, ByVal objIndex As Integer, ByVal amount As Long)
 '***************************************************
 'Author: Juan Martín Sotuyo Dodero (Maraxus)
 'Last Modification: 05/17/06
@@ -16375,20 +16347,20 @@ On Error GoTo Errhandler
     With UserList(UserIndex).outgoingData
         Call .WriteByte(ServerPacketID.ChangeUserTradeSlot)
         
-        Call .WriteInteger(ObjIndex)
-        Call .WriteASCIIString(ObjData(ObjIndex).name)
+        Call .WriteInteger(objIndex)
+        Call .WriteASCIIString(ObjData(objIndex).name)
         Call .WriteLong(amount)
-        Call .WriteInteger(ObjData(ObjIndex).GrhIndex)
-        Call .WriteByte(ObjData(ObjIndex).OBJType)
-        Call .WriteInteger(ObjData(ObjIndex).MaxHIT)
-        Call .WriteInteger(ObjData(ObjIndex).MinHIT)
-        Call .WriteInteger(ObjData(ObjIndex).def)
-        Call .WriteLong(SalePrice(ObjData(ObjIndex).Valor))
+        Call .WriteInteger(ObjData(objIndex).GrhIndex)
+        Call .WriteByte(ObjData(objIndex).OBJType)
+        Call .WriteInteger(ObjData(objIndex).MaxHIT)
+        Call .WriteInteger(ObjData(objIndex).MinHIT)
+        Call .WriteInteger(ObjData(objIndex).def)
+        Call .WriteLong(SalePrice(ObjData(objIndex).Valor))
     End With
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16414,7 +16386,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16452,7 +16424,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16489,7 +16461,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16517,7 +16489,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16540,7 +16512,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16580,7 +16552,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If
@@ -16603,7 +16575,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    If Err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
+    If err.Number = UserList(UserIndex).outgoingData.NotEnoughSpaceErrCode Then
         Call FlushBuffer(UserIndex)
         Resume
     End If

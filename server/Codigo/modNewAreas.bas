@@ -8,27 +8,29 @@ Attribute VB_Name = "modNewAreas"
 
 Option Explicit
 
+'Tamaño del mapa
+Public Const XMaxMapSize As Integer = 100
+Public Const XMinMapSize As Integer = 1
+Public Const YMaxMapSize As Integer = 100
+Public Const YMinMapSize As Integer = 1
+
 'cantidad máxima de objetos permitidos en el piso
-Private Const MAX_OBJ_DROP                              As Integer = 10000
+Private Const MAX_OBJ_DROP                                                  As Integer = 10000
 
 'visión para una resolución de 800x600
-Private Const USER_VISION_X                             As Integer = 20
-Private Const USER_VISION_Y                             As Integer = 20
-
-'dimensiones del mapa
-Private Const MAP_X_SIZE                                As Integer = 100
-Private Const MAP_Y_SIZE                                As Integer = 100
+Private Const USER_VISION_X                                                 As Integer = 20
+Private Const USER_VISION_Y                                                 As Integer = 20
 
 'variables de áreas
-Public areasData()                                      As New clsAreasData
-Public adyacentArea()                                   As tAdyacents
-Public areasSize                                        As Long
-Public areasAmount                                      As Long
-Public posToAreaID(1 To MAP_X_SIZE, 1 To MAP_Y_SIZE)    As Long
+Public areasData()                                                          As New clsAreasData
+Public adyacentArea()                                                       As tAdyacents
+Public areasSize                                                            As Long
+Public areasAmount                                                          As Long
+Public posToAreaID(XMinMapSize To XMaxMapSize, YMinMapSize To YMaxMapSize)  As Long
 
-Public Const MAX_ADY                                    As Byte = 9 'máximo de nueve porque incluye el propio area principal
+Public Const MAX_ADY                                                        As Byte = 9 'máximo de nueve porque incluye el propio area principal
 
-Public Const AREAS_AMOUNT                               As Byte = 25 ' 10000 (tiles cuadrados del mapa) /400 (tiles cuadrados del área)
+Public Const AREAS_AMOUNT                                                   As Byte = 25 ' 10000 (tiles cuadrados del mapa) /400 (tiles cuadrados del área)
 
 'enumerados de array de areas
 Private Enum eAreasAdyacent
@@ -44,11 +46,11 @@ Private Enum eAreasAdyacent
 End Enum
 
 Type tAdyacents
-    ady(1 To MAX_ADY)                                   As Long
+    ady(1 To MAX_ADY)                                                       As Long
 End Type
 
 Public Type tNewAreas
-    areaID                                              As Long
+    areaID                                                                  As Long
 End Type
 
 ' @
@@ -66,7 +68,7 @@ Public Sub areasInitialize()
 
     'calculos iniciales
     areasSize = USER_VISION_X * USER_VISION_Y
-    areasAmount = (MAP_X_SIZE * MAP_Y_SIZE) / areasSize
+    areasAmount = (XMaxMapSize * YMaxMapSize) / areasSize
     
     'redimensionamos e inicializamos las areas
     ReDim areasData(1 To NumMaps, areasAmount) As New clsAreasData
@@ -107,9 +109,9 @@ Public Sub areasInitialize()
 
     Next X
     
-    For X = 1 To MAP_X_SIZE
+    For X = XMinMapSize To XMaxMapSize
     
-        For Y = 1 To MAP_X_SIZE
+        For Y = YMinMapSize To YMaxMapSize
         
             For z = 1 To AREAS_AMOUNT
             
@@ -641,3 +643,5 @@ With Npclist(NpcIndex)
 End With
 
 End Sub
+
+

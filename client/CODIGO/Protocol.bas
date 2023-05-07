@@ -106,7 +106,6 @@ Private Enum ServerPacketID
     PlayMIDI                ' TM
     PlayWave                ' TW
     guildList               ' GL
-    AreaChanged             ' CA
     PauseToggle             ' BKW
     RainToggle              ' LLU
     CreateFX                ' CFX
@@ -752,9 +751,6 @@ On Error Resume Next
         
         Case ServerPacketID.guildList               ' GL
             Call HandleGuildList
-        
-        Case ServerPacketID.AreaChanged             ' CA
-            Call HandleAreaChanged
         
         Case ServerPacketID.PauseToggle             ' BKW
             Call HandlePauseToggle
@@ -1600,7 +1596,7 @@ Private Sub HandleUpdateExp()
     
     'Get data and update form
     UserExp = incomingData.ReadLong()
-    frmMain.exp.Caption = "Exp: " & UserExp & "/" & UserPasarNivel
+    frmMain.Exp.Caption = "Exp: " & UserExp & "/" & UserPasarNivel
     frmMain.lblPorcLvl.Caption = "[" & Round(CDbl(UserExp) * CDbl(100) / CDbl(UserPasarNivel), 2) & "%]"
 End Sub
 
@@ -2590,32 +2586,6 @@ On Error GoTo 0
 End Sub
 
 ''
-' Handles the AreaChanged message.
-
-Private Sub HandleAreaChanged()
-'***************************************************
-'Author: Juan Martín Sotuyo Dodero (Maraxus)
-'Last Modification: 05/17/06
-'
-'***************************************************
-    If incomingData.length < 3 Then
-        Err.Raise incomingData.NotEnoughDataErrCode
-        Exit Sub
-    End If
-    
-    'Remove packet ID
-    Call incomingData.ReadByte
-    
-    Dim x As Byte
-    Dim y As Byte
-    
-    x = incomingData.ReadByte()
-    y = incomingData.ReadByte()
-        
-    Call CambioDeArea(x, y)
-End Sub
-
-''
 ' Handles the PauseToggle message.
 
 Private Sub HandlePauseToggle()
@@ -2720,7 +2690,7 @@ Private Sub HandleUpdateUserStats()
     UserPasarNivel = incomingData.ReadLong()
     UserExp = incomingData.ReadLong()
     
-    frmMain.exp.Caption = "Exp: " & UserExp & "/" & UserPasarNivel
+    frmMain.Exp.Caption = "Exp: " & UserExp & "/" & UserPasarNivel
     
     If UserPasarNivel > 0 Then
         frmMain.lblPorcLvl.Caption = "[" & Round(CDbl(UserExp) * CDbl(100) / CDbl(UserPasarNivel), 2) & "%]"
@@ -3992,11 +3962,11 @@ On Error GoTo ErrHandler
         .criminales.Caption = "Criminales asesinados: " & CStr(Buffer.ReadLong())
         
         If reputation > 0 Then
-            .status.Caption = " (Ciudadano)"
-            .status.ForeColor = vbBlue
+            .Status.Caption = " (Ciudadano)"
+            .Status.ForeColor = vbBlue
         Else
-            .status.Caption = " (Criminal)"
-            .status.ForeColor = vbRed
+            .Status.Caption = " (Criminal)"
+            .Status.ForeColor = vbRed
         End If
         
         Call .Show(vbModeless, frmMain)

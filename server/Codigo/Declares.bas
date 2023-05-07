@@ -427,12 +427,6 @@ Public Const AumentoSTLeñador As Byte = AumentoSTDef + 23
 Public Const AumentoSTPescador As Byte = AumentoSTDef + 20
 Public Const AumentoSTMinero As Byte = AumentoSTDef + 25
 
-'Tamaño del mapa
-Public Const XMaxMapSize As Byte = 100
-Public Const XMinMapSize As Byte = 1
-Public Const YMaxMapSize As Byte = 100
-Public Const YMinMapSize As Byte = 1
-
 'Tamaño del tileset
 Public Const TileSizeX As Byte = 32
 Public Const TileSizeY As Byte = 32
@@ -1311,7 +1305,7 @@ End Type
 Public Type MapBlock
     Blocked As Byte
     Graphic(1 To 4) As Integer
-    userIndex As Integer
+    UserIndex As Integer
     NpcIndex As Integer
     ObjInfo As obj
     TileExit As WorldPos

@@ -127,7 +127,7 @@ If UserList(UserIndex).Stats.UserSkills(eSkill.Navegacion) / ModNave < Barco.Min
     Exit Sub
 End If
 
-UserList(UserIndex).Invent.BarcoObjIndex = UserList(UserIndex).Invent.Object(Slot).ObjIndex
+UserList(UserIndex).Invent.BarcoObjIndex = UserList(UserIndex).Invent.Object(Slot).objIndex
 UserList(UserIndex).Invent.BarcoSlot = Slot
 
 If UserList(UserIndex).flags.Navegando = 0 Then
@@ -210,7 +210,7 @@ End If
 Exit Sub
 
 Errhandler:
-    Call LogError("Error en FundirMineral. Error " & Err.Number & " : " & Err.description)
+    Call LogError("Error en FundirMineral. Error " & err.Number & " : " & err.description)
 
 End Sub
 Function TieneObjetos(ByVal ItemIndex As Integer, ByVal cant As Integer, ByVal UserIndex As Integer) As Boolean
@@ -219,7 +219,7 @@ Function TieneObjetos(ByVal ItemIndex As Integer, ByVal cant As Integer, ByVal U
 Dim i As Integer
 Dim Total As Long
 For i = 1 To MAX_INVENTORY_SLOTS
-    If UserList(UserIndex).Invent.Object(i).ObjIndex = ItemIndex Then
+    If UserList(UserIndex).Invent.Object(i).objIndex = ItemIndex Then
         Total = Total + UserList(UserIndex).Invent.Object(i).amount
     End If
 Next i
@@ -243,7 +243,7 @@ Public Sub QuitarObjetos(ByVal ItemIndex As Integer, ByVal cant As Integer, ByVa
 Dim i As Integer
 For i = 1 To MAX_INVENTORY_SLOTS
     With UserList(UserIndex).Invent.Object(i)
-        If .ObjIndex = ItemIndex Then
+        If .objIndex = ItemIndex Then
             If .amount <= cant And .Equipped = 1 Then Call Desequipar(UserIndex, i)
             
             .amount = .amount - cant
@@ -251,7 +251,7 @@ For i = 1 To MAX_INVENTORY_SLOTS
                 cant = Abs(.amount)
                 UserList(UserIndex).Invent.NroItems = UserList(UserIndex).Invent.NroItems - 1
                 .amount = 0
-                .ObjIndex = 0
+                .objIndex = 0
             Else
                 cant = 0
             End If
@@ -379,16 +379,16 @@ If PuedeConstruir(UserIndex, ItemIndex) And PuedeConstruirHerreria(ItemIndex) Th
     ElseIf ObjData(ItemIndex).OBJType = eOBJType.otArmadura Then
         Call WriteConsoleMsg(UserIndex, "Has construido la armadura!.", FontTypeNames.FONTTYPE_INFO)
     End If
-    Dim MiObj As Obj
+    Dim MiObj As obj
     MiObj.amount = 1
-    MiObj.ObjIndex = ItemIndex
+    MiObj.objIndex = ItemIndex
     If Not MeterItemEnInventario(UserIndex, MiObj) Then
         Call TirarItemAlPiso(UserList(UserIndex).Pos, MiObj)
     End If
     
     'Log de construcción de Items. Pablo (ToxicWaste) 10/09/07
-    If ObjData(MiObj.ObjIndex).Log = 1 Then
-        Call LogDesarrollo(UserList(UserIndex).name & " ha construído " & MiObj.amount & " " & ObjData(MiObj.ObjIndex).name)
+    If ObjData(MiObj.objIndex).Log = 1 Then
+        Call LogDesarrollo(UserList(UserIndex).name & " ha construído " & MiObj.amount & " " & ObjData(MiObj.objIndex).name)
     End If
     
     Call SubirSkill(UserIndex, Herreria)
@@ -452,16 +452,16 @@ If CarpinteroTieneMateriales(UserIndex, ItemIndex) And _
     Call CarpinteroQuitarMateriales(UserIndex, ItemIndex)
     Call WriteConsoleMsg(UserIndex, "Has construido el objeto!.", FontTypeNames.FONTTYPE_INFO)
     
-    Dim MiObj As Obj
+    Dim MiObj As obj
     MiObj.amount = 1
-    MiObj.ObjIndex = ItemIndex
+    MiObj.objIndex = ItemIndex
     If Not MeterItemEnInventario(UserIndex, MiObj) Then
                     Call TirarItemAlPiso(UserList(UserIndex).Pos, MiObj)
     End If
     
     'Log de construcción de Items. Pablo (ToxicWaste) 10/09/07
-    If ObjData(MiObj.ObjIndex).Log = 1 Then
-        Call LogDesarrollo(UserList(UserIndex).name & " ha construído " & MiObj.amount & " " & ObjData(MiObj.ObjIndex).name)
+    If ObjData(MiObj.objIndex).Log = 1 Then
+        Call LogDesarrollo(UserList(UserIndex).name & " ha construído " & MiObj.amount & " " & ObjData(MiObj.objIndex).name)
     End If
     
     Call SubirSkill(UserIndex, Carpinteria)
@@ -498,7 +498,7 @@ Public Sub DoLingotes(ByVal UserIndex As Integer)
     Dim obji As Integer
 
     Slot = UserList(UserIndex).flags.TargetObjInvSlot
-    obji = UserList(UserIndex).Invent.Object(Slot).ObjIndex
+    obji = UserList(UserIndex).Invent.Object(Slot).objIndex
     
     If UserList(UserIndex).Invent.Object(Slot).amount < MineralesParaLingote(obji) Or _
         ObjData(obji).OBJType <> eOBJType.otMinerales Then
@@ -509,12 +509,12 @@ Public Sub DoLingotes(ByVal UserIndex As Integer)
     UserList(UserIndex).Invent.Object(Slot).amount = UserList(UserIndex).Invent.Object(Slot).amount - MineralesParaLingote(obji)
     If UserList(UserIndex).Invent.Object(Slot).amount < 1 Then
         UserList(UserIndex).Invent.Object(Slot).amount = 0
-        UserList(UserIndex).Invent.Object(Slot).ObjIndex = 0
+        UserList(UserIndex).Invent.Object(Slot).objIndex = 0
     End If
     
-    Dim MiObj As Obj
+    Dim MiObj As obj
     MiObj.amount = 1
-    MiObj.ObjIndex = ObjData(UserList(UserIndex).flags.TargetObjInvIndex).LingoteIndex
+    MiObj.objIndex = ObjData(UserList(UserIndex).flags.TargetObjInvIndex).LingoteIndex
     If Not MeterItemEnInventario(UserIndex, MiObj) Then
         Call TirarItemAlPiso(UserList(UserIndex).Pos, MiObj)
     End If
@@ -690,7 +690,7 @@ End If
 Exit Sub
 
 Errhandler:
-    Call LogError("Error en DoDomar. Error " & Err.Number & " : " & Err.description)
+    Call LogError("Error en DoDomar. Error " & err.Number & " : " & err.description)
 
 End Sub
 
@@ -761,6 +761,9 @@ Sub DoAdminInvisible(ByVal UserIndex As Integer)
             .Char.body = .flags.OldBody
             .Char.Head = .flags.OldHead
             
+            'agus; fix gms invisibles
+            Call removeUserArea(UserIndex, .Pos.map, .Pos.X, .Pos.Y)
+            
             'Borramos el personaje en del cliente del GM
             Call EnviarDatosASlot(UserIndex, PrepareMessageCharacterRemove(.Char.CharIndex))
             'Le mandamos el mensaje para crear el personaje a los clientes que estén cerca
@@ -774,7 +777,7 @@ Sub TratarDeHacerFogata(ByVal map As Integer, ByVal X As Integer, ByVal Y As Int
 
 Dim Suerte As Byte
 Dim exito As Byte
-Dim Obj As Obj
+Dim obj As obj
 Dim posMadera As WorldPos
 
 If Not LegalPos(map, X, Y) Then Exit Sub
@@ -785,7 +788,7 @@ With posMadera
     .Y = Y
 End With
 
-If MapData(map, X, Y).ObjInfo.ObjIndex <> 58 Then
+If MapData(map, X, Y).ObjInfo.objIndex <> 58 Then
     Call WriteConsoleMsg(UserIndex, "Necesitas clickear sobre Leña para hacer ramitas", FontTypeNames.FONTTYPE_INFO)
     Exit Sub
 End If
@@ -817,12 +820,12 @@ End If
 exito = RandomNumber(1, Suerte)
 
 If exito = 1 Then
-    Obj.ObjIndex = FOGATA_APAG
-    Obj.amount = MapData(map, X, Y).ObjInfo.amount \ 3
+    obj.objIndex = FOGATA_APAG
+    obj.amount = MapData(map, X, Y).ObjInfo.amount \ 3
     
-    Call WriteConsoleMsg(UserIndex, "Has hecho " & Obj.amount & " fogatas.", FontTypeNames.FONTTYPE_INFO)
+    Call WriteConsoleMsg(UserIndex, "Has hecho " & obj.amount & " fogatas.", FontTypeNames.FONTTYPE_INFO)
     
-    Call MakeObj(Obj, map, X, Y)
+    Call MakeObj(obj, map, X, Y)
     
     'Seteamos la fogata como el nuevo TargetObj del user
     UserList(UserIndex).flags.TargetObj = FOGATA_APAG
@@ -859,14 +862,14 @@ Suerte = Int(-0.00125 * Skill * Skill - 0.3 * Skill + 49)
 res = RandomNumber(1, Suerte)
 
 If res <= 6 Then
-    Dim MiObj As Obj
+    Dim MiObj As obj
     
     If UserList(UserIndex).clase = eClass.Fisher Then
         MiObj.amount = RandomNumber(1, 4)
     Else
         MiObj.amount = 1
     End If
-    MiObj.ObjIndex = Pescado
+    MiObj.objIndex = Pescado
     
     If Not MeterItemEnInventario(UserIndex, MiObj) Then
         Call TirarItemAlPiso(UserList(UserIndex).Pos, MiObj)
@@ -894,7 +897,7 @@ UserList(UserIndex).Counters.Trabajando = UserList(UserIndex).Counters.Trabajand
 Exit Sub
 
 Errhandler:
-    Call LogError("Error en DoPescar. Error " & Err.Number & " : " & Err.description)
+    Call LogError("Error en DoPescar. Error " & err.Number & " : " & err.description)
 End Sub
 
 Public Sub DoPescarRed(ByVal UserIndex As Integer)
@@ -924,7 +927,7 @@ If Suerte > 0 Then
     res = RandomNumber(1, Suerte)
     
     If res < 6 Then
-        Dim MiObj As Obj
+        Dim MiObj As obj
         Dim PecesPosibles(1 To 4) As Integer
         
         PecesPosibles(1) = PESCADO1
@@ -937,7 +940,7 @@ If Suerte > 0 Then
         Else
             MiObj.amount = 1
         End If
-        MiObj.ObjIndex = PecesPosibles(RandomNumber(LBound(PecesPosibles), UBound(PecesPosibles)))
+        MiObj.objIndex = PecesPosibles(RandomNumber(LBound(PecesPosibles), UBound(PecesPosibles)))
         
         If Not MeterItemEnInventario(UserIndex, MiObj) Then
             Call TirarItemAlPiso(UserList(UserIndex).Pos, MiObj)
@@ -1105,7 +1108,7 @@ End If
 Exit Sub
 
 Errhandler:
-    Call LogError("Error en DoRobar. Error " & Err.Number & " : " & Err.description)
+    Call LogError("Error en DoRobar. Error " & err.Number & " : " & err.description)
 
 End Sub
 
@@ -1121,7 +1124,7 @@ Public Function ObjEsRobable(ByVal VictimaIndex As Integer, ByVal Slot As Intege
 
 Dim OI As Integer
 
-OI = UserList(VictimaIndex).Invent.Object(Slot).ObjIndex
+OI = UserList(VictimaIndex).Invent.Object(Slot).objIndex
 
 ObjEsRobable = _
 ObjData(OI).OBJType <> eOBJType.otLlaves And _
@@ -1147,7 +1150,7 @@ If RandomNumber(1, 12) < 6 Then 'Comenzamos por el principio o el final?
     i = 1
     Do While Not flag And i <= MAX_INVENTORY_SLOTS
         'Hay objeto en este slot?
-        If UserList(VictimaIndex).Invent.Object(i).ObjIndex > 0 Then
+        If UserList(VictimaIndex).Invent.Object(i).objIndex > 0 Then
            If ObjEsRobable(VictimaIndex, i) Then
                  If RandomNumber(1, 10) < 4 Then flag = True
            End If
@@ -1158,7 +1161,7 @@ Else
     i = 20
     Do While Not flag And i > 0
       'Hay objeto en este slot?
-      If UserList(VictimaIndex).Invent.Object(i).ObjIndex > 0 Then
+      If UserList(VictimaIndex).Invent.Object(i).objIndex > 0 Then
          If ObjEsRobable(VictimaIndex, i) Then
                If RandomNumber(1, 10) < 4 Then flag = True
          End If
@@ -1168,7 +1171,7 @@ Else
 End If
 
 If flag Then
-    Dim MiObj As Obj
+    Dim MiObj As obj
     Dim num As Byte
     'Cantidad al azar
     num = RandomNumber(1, 5)
@@ -1178,7 +1181,7 @@ If flag Then
     End If
                 
     MiObj.amount = num
-    MiObj.ObjIndex = UserList(VictimaIndex).Invent.Object(i).ObjIndex
+    MiObj.objIndex = UserList(VictimaIndex).Invent.Object(i).objIndex
     
     UserList(VictimaIndex).Invent.Object(i).amount = UserList(VictimaIndex).Invent.Object(i).amount - num
                 
@@ -1193,9 +1196,9 @@ If flag Then
     End If
     
     If UserList(LadrOnIndex).clase = eClass.Thief Then
-        Call WriteConsoleMsg(LadrOnIndex, "Has robado " & MiObj.amount & " " & ObjData(MiObj.ObjIndex).name, FontTypeNames.FONTTYPE_INFO)
+        Call WriteConsoleMsg(LadrOnIndex, "Has robado " & MiObj.amount & " " & ObjData(MiObj.objIndex).name, FontTypeNames.FONTTYPE_INFO)
     Else
-        Call WriteConsoleMsg(LadrOnIndex, "Has hurtado " & MiObj.amount & " " & ObjData(MiObj.ObjIndex).name, FontTypeNames.FONTTYPE_INFO)
+        Call WriteConsoleMsg(LadrOnIndex, "Has hurtado " & MiObj.amount & " " & ObjData(MiObj.objIndex).name, FontTypeNames.FONTTYPE_INFO)
     End If
 Else
     Call WriteConsoleMsg(LadrOnIndex, "No has logrado robar ningún objeto.", FontTypeNames.FONTTYPE_INFO)
@@ -1303,7 +1306,7 @@ On Error GoTo Errhandler
 Exit Sub
 
 Errhandler:
-    Call LogError("Error en QuitarSta. Error " & Err.Number & " : " & Err.description)
+    Call LogError("Error en QuitarSta. Error " & err.Number & " : " & err.description)
     
 End Sub
 
@@ -1326,7 +1329,7 @@ Suerte = Int(-0.00125 * Skill * Skill - 0.3 * Skill + 49)
 res = RandomNumber(1, Suerte)
 
 If res <= 6 Then
-    Dim MiObj As Obj
+    Dim MiObj As obj
     
     If UserList(UserIndex).clase = eClass.Lumberjack Then
         MiObj.amount = RandomNumber(1, 4)
@@ -1334,7 +1337,7 @@ If res <= 6 Then
         MiObj.amount = 1
     End If
     
-    MiObj.ObjIndex = Leña
+    MiObj.objIndex = Leña
     
     
     If Not MeterItemEnInventario(UserIndex, MiObj) Then
@@ -1387,11 +1390,11 @@ Suerte = Int(-0.00125 * Skill * Skill - 0.3 * Skill + 49)
 res = RandomNumber(1, Suerte)
 
 If res <= 5 Then
-    Dim MiObj As Obj
+    Dim MiObj As obj
     
     If UserList(UserIndex).flags.TargetObj = 0 Then Exit Sub
     
-    MiObj.ObjIndex = ObjData(UserList(UserIndex).flags.TargetObj).MineralIndex
+    MiObj.objIndex = ObjData(UserList(UserIndex).flags.TargetObj).MineralIndex
     
     If UserList(UserIndex).clase = eClass.Miner Then
         MiObj.amount = RandomNumber(1, 6) '(NicoNZ) 04/25/2008

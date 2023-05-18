@@ -1,0 +1,73 @@
+'@
+'@ Autor: Juan Agustín Oliva
+'@ este método se llama cuando un usuario cambia de área. Refresca info y envía al cliente
+'@ en el viejo sistema de áreas, este método sería el 'CheckUpdateNeededUser'
+'@
+Public Sub refreshUserArea(ByVal UserIndex As Integer)
+
+With UserList(UserIndex)
+    
+    Dim areaID  As Long
+    areaID = posToAreaID(.Pos.X, .Pos.Y)
+
+    If .newAreas.areaID <> areaID Then
+    
+        Dim i   As Long
+    
+        'borramos el user del viejo area
+        If .newAreas.areaID <> -1 Then Call areasData(.Pos.map, .newAreas.areaID).userArea.Remove(UserIndex)
+        
+        'agregamos el user al nuevo area
+        Call areasData(.Pos.map, areaID).userArea.Add(UserIndex, UserIndex)
+        
+        Dim T
+        Dim tIndex  As Integer
+        
+        For i = 1 To MAX_ADY
+        
+            For Each T In areasData(.Pos.map, adyacentArea(areaID).ady(i)).userArea.Items
+            
+                tIndex = T 'lo manejamos dentro de un integer para no convertirlo cada vez que se use
+                
+                If tIndex <> UserIndex Or .newAreas.areaID = -1 Then
+            
+                    If UserList(tIndex).flags.AdminInvisible = 0 Then
+                        Call MakeUserChar(False, UserIndex, tIndex, UserList(tIndex).Pos.map, UserList(tIndex).Pos.X, UserList(tIndex).Pos.Y)
+                    End If
+                    
+                    If .flags.AdminInvisible = 0 Then
+                        Call MakeUserChar(False, tIndex, UserIndex, .Pos.map, .Pos.X, .Pos.Y)
+                    End If
+                    
+                End If
+            
+            Next
+            
+            For Each T In areasData(.Pos.map, adyacentArea(areaID).ady(i)).npcArea.Items
+            
+                tIndex = T
+            
+                Call MakeNPCChar(False, UserIndex, tIndex, Npclist(tIndex).Pos.map, Npclist(tIndex).Pos.X, Npclist(tIndex).Pos.Y)
+            
+            Next
+            
+            For Each T In areasData(.Pos.map, adyacentArea(areaID).ady(i)).objArea.Items
+            
+                Call WriteObjectCreate(UserIndex, ObjData(T.p_objIndex).GrhIndex, T.p_posX, T.p_posY)
+                            
+                If ObjData(T.p_objIndex).OBJType = eOBJType.otPuertas Then
+                   Call Bloquear(False, UserIndex, T.p_posX, T.p_posY, MapData(.Pos.map, T.p_posX, T.p_posY).Blocked)
+                   Call Bloquear(False, UserIndex, T.p_posX - 1, T.p_posY, MapData(.Pos.map, T.p_posX - 1, T.p_posY).Blocked)
+                End If
+            
+            Next
+        
+        Next i
+        
+        .newAreas.areaID = areaID
+    
+    End If
+
+End With
+
+End Sub

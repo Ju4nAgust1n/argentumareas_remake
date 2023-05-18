@@ -564,8 +564,13 @@ With UserList(UserIndex)
                 
                 If tIndex <> UserIndex Or .newAreas.areaID = -1 Then
             
-                    Call MakeUserChar(False, UserIndex, tIndex, UserList(tIndex).Pos.map, UserList(tIndex).Pos.X, UserList(tIndex).Pos.Y)
-                    Call MakeUserChar(False, tIndex, UserIndex, .Pos.map, .Pos.X, .Pos.Y)
+                    If UserList(tIndex).flags.AdminInvisible = 0 Then
+                        Call MakeUserChar(False, UserIndex, tIndex, UserList(tIndex).Pos.map, UserList(tIndex).Pos.X, UserList(tIndex).Pos.Y)
+                    End If
+                    
+                    If .flags.AdminInvisible = 0 Then
+                        Call MakeUserChar(False, tIndex, UserIndex, .Pos.map, .Pos.X, .Pos.Y)
+                    End If
                     
                 End If
             
